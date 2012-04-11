@@ -1,0 +1,25 @@
+from distutils.core import setup
+from hannibal import __version__
+
+setup(name='Hannibal',
+      version=__version__,
+      description='',
+      long_description=open('README.md').read(),
+      author='Justin Quick',
+      author_email='justin@bolsterlabs.com',
+      url='http://github.com/bolster/hannibal',
+      packages=['hannibal'],
+      test_suite = 'nose.collector',
+      scripts=['bin/hannibal'],
+      classifiers=['Development Status :: 3 - Alpha',
+                   'Environment :: Console',
+                   'Topic :: System :: Monitoring',
+                   'Topic :: System :: Clustering',
+                   'Topic :: System :: Distributed Computing',
+                   'Topic :: System :: Shells',
+                   'Intended Audience :: Developers',
+                   'License :: OSI Approved :: BSD License',
+                   'Operating System :: OS Independent',
+                   'Programming Language :: Python',
+                   'Topic :: Utilities'],
+      )

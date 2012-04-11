@@ -1,0 +1,65 @@
+{
+    "name": "boto",
+    "zones": ["us-east-1a"],
+    "identity_file": "elasticsearch.pem",
+    "user": "ubuntu",
+    "fabfile": "./fabfile.py",
+    "fabric": {
+        "parallel": true
+    },
+    "rules": [
+        {
+            "from_port": 22, "to_port": 22,
+            "cidr_ip": "0.0.0.0/0", "ip_protocol": "tcp"
+        },
+        {
+            "from_port": 9200, "to_port": 9200,
+            "cidr_ip": "0.0.0.0/0", "ip_protocol": "tcp"
+        }
+    ],
+    "instance": {
+        "image_id": "ami-6d895004",
+        "key_name": "elasticsearch",
+        "instance_type": "m1.small"
+    },
+    "load_balancer": {
+        "listeners":  [
+            [80, 9200, "http"]
+        ],
+        "health_checks": [
+            {
+                "interval": 20,
+                "healthy_threshold": 3,
+                "unhealthy_threshold": 5,
+                "target": "HTTP:9200/_status"
+            }
+        ]
+    },
+    "autoscale": {
+        "max_size": 5, "min_size": 2,
+        "default_cooldown": 180,
+        "desired_capacity": 2,
+        "scaling_policies": [
+            {
+                "name": "up",
+                "scaling_adjustment": 2,
+                "alarms": [
+                    {
+                        "comparison": ">",
+                        "threshold": "70"
+                    }
+                ]
+            },
+            {
+                "name": "down",
+                "scaling_adjustment": -1,
+                "alarms": [
+                    {
+                        "comparison": "<=",
+                        "threshold": "30"
+                    }
+                ]
+            }
+        ]
+    }
+}
